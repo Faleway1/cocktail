@@ -96,7 +96,7 @@ jobs:
       - name: Cypress E2E Install
         uses: cypress-io/github-action@v6
         with:
-          runTetts: false
+          runTests: false
           working-directory: ./frontend
 
       - name: Install Frontend Dependencies

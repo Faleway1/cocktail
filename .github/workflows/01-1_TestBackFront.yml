@@ -86,7 +86,7 @@ jobs:
 
       - name: Test Backend Container
         if: success()
-        run: curl http://127.O.0.1:12000
+        run: curl http://127.0.0.1:12000
 
       - name: Setup Node.js
         uses: actions/setup-node@v3

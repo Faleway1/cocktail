@@ -6,7 +6,7 @@ on:
 jobs:
   Backend:
     runs-on: ubuntu-lastest
-    default:
+    defaults:
       run:
         working-directory: ./backend
     services:

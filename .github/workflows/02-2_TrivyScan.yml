@@ -19,10 +19,13 @@ jobs:
           username: ${{env.USERNAME}}
           password: ${{env.GITHUB_TOKEN}}
 
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
       - name: Trivy Back Scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{ env.IMAGE_NAME}}-back:latest
+          image-ref: ${{env.REGISTRY}}/${{ env.IMAGE_NAME_LOWER}}-back:latest
           format: 'table'
           exit-code: '1'
           output: 'back-trivy-results.txt'
@@ -41,7 +44,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.28.0
         if: always()
         with:
-          image-ref: ${{env.REGISTRY}}/${{ env.IMAGE_NAME}}-front:latest
+          image-ref: ${{env.REGISTRY}}/${{ env.IMAGE_NAME_LOWER}}-front:latest
           format: 'table'
           exit-code: '1'
           output: 'front-trivy-results.txt'

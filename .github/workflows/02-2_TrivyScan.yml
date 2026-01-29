@@ -1,0 +1,58 @@
+name: 02-1 Staging - Trivy Scan
+
+on:
+  workflow_call:
+
+env:
+  REGISTRY: ghcr.io
+  USERNAME: ${{ github.actor}}
+  IMAGE_NAME: ${{ github.repository}}
+
+jobs:
+  Trivy_Scan_Back:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{env.USERNAME}}
+          password: ${{env.GITHUB_TOKEN}}
+
+      - name: Trivy Back Scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{env.REGISTRY}}/${{ env.IMAGE_NAME}}-back:latest
+          format: 'table'
+          exit-code: '1'
+          output: 'back-trivy-results.txt'
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          ignore-unfixed: true
+
+      - name: Upload Back Trivy Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: back-trivy-results
+          path: back-trivy-results.txt
+
+      - name: Trivy Back Scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        if: always()
+        with:
+          image-ref: ${{env.REGISTRY}}/${{ env.IMAGE_NAME}}-front:latest
+          format: 'table'
+          exit-code: '1'
+          output: 'front-trivy-results.txt'
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          ignore-unfixed: true
+
+
+      - name: Upload Front Trivy Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: front-trivy-results
+          path: front-trivy-results.txt

@@ -13,7 +13,7 @@ jobs:
       - run: env | sort
 
   Build_Push_docker:
-    if: ${{ github.ref_name == 'developp'}}
+    if: ${{ github.ref_name == 'develop'}}
     uses: ./.github/workflows/z_Docker-Ghcr.yml
     permissions:
       contents: read
